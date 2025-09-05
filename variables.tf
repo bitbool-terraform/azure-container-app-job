@@ -96,7 +96,7 @@ variable "startup_probe_defaults" {
 
 
 
-variable "location" {}
+
 variable "replica_timeout_in_seconds" { default = 900 }
 
 variable "manual_trigger_config_parallelism" { default = 1 }

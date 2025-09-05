@@ -1,24 +1,24 @@
 locals {
 # App gw integration
 
-    app_gw_rule = {
-        "${var.app_name}" = {
-            hostname = var.app_gw.hostname
-            backend_port = lookup(var.app_gw,"backend_port",80)
-            path = lookup(var.app_gw,"path","/*")
-            backend_target = var.app_name
-            pick_host_name_from_backend_address = var.appgw_hostname_override
-        }
+    # app_gw_rule = {
+    #     "${var.app_name}" = {
+    #         hostname = var.app_gw.hostname
+    #         backend_port = lookup(var.app_gw,"backend_port",80)
+    #         path = lookup(var.app_gw,"path","/*")
+    #         backend_target = var.app_name
+    #         pick_host_name_from_backend_address = var.appgw_hostname_override
+    #     }
 
 
-    }
+    # }
 
-    app_gw_backend_target = {
-        "${var.app_name}" = {
-            fqdns= [resource.azurerm_container_app.container_app.ingress[0].fqdn]
-        }
+    # app_gw_backend_target = {
+    #     "${var.app_name}" = {
+    #         fqdns= [resource.azurerm_container_app.container_app.ingress[0].fqdn]
+    #     }
 
-    }
+    # }
 
 
 # Secrets
