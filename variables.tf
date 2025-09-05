@@ -32,6 +32,7 @@ variable "memory" { default = "0.5Gi" }
 variable "max_replicas" { default = 1 }
 variable "min_replicas" { default = 1 }
 
+
 variable "app_env" {
   type = map(string)
   default = {}
@@ -92,3 +93,11 @@ variable "startup_probe_defaults" {
                       } 
                           }
 
+
+
+
+variable "location" {}
+variable "replica_timeout_in_seconds" { default = 1000 }
+
+variable "manual_trigger_config_parallelism" { default = 1 }
+variable "replica_completion_count" { default = 1 }

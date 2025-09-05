@@ -1,13 +1,19 @@
-resource "azurerm_container_app" "container_app" {
-  
-  container_app_environment_id = var.container_app_environment_id
+resource "azurerm_container_app_job" "container_app_job" {
+
+
   name                         = var.app_name
+  location                     = var.location
   resource_group_name          = var.resource_group
-  revision_mode                = var.revision_mode
-  tags                         = var.tags
+  container_app_environment_id = var.container_app_environment_id
+  tags                         = var.tags  
   workload_profile_name        = var.workload_profile
+  replica_timeout_in_seconds   = var.replica_timeout_in_seconds
 
-
+  manual_trigger_config {
+    parallelism              = var.manual_trigger_config_parallelism
+    replica_completion_count = var.replica_completion_count
+  }
+   
   dynamic "secret" {
     for_each = local.secrets_all
 
@@ -20,8 +26,6 @@ resource "azurerm_container_app" "container_app" {
 
 
   template {
-    max_replicas    = var.max_replicas
-    min_replicas    = var.min_replicas
 
   container {
 
@@ -129,12 +133,12 @@ resource "azurerm_container_app" "container_app" {
   }
   }
 
-    lifecycle {
-    ignore_changes = [
-      template[0].container[0].image,
-      tags
-    ]
-  }
+  #   lifecycle {
+  #   ignore_changes = [
+  #     template[0].container[0].image,
+  #     tags
+  #   ]
+  # }
 
 
   dynamic "identity" {
@@ -153,24 +157,6 @@ resource "azurerm_container_app" "container_app" {
   #   }
   # }
 
-
-
-  dynamic "ingress" {
-    for_each = var.app_ingress_enabled == false ? [] : [var.app_ingress_enabled]
-
-    content {
-    allow_insecure_connections = true
-    external_enabled           = true
-    target_port                = var.target_port
-
-    traffic_weight {
-      percentage = 100
-      latest_revision = true
-    }
-  }
-  }
-
-
   dynamic "registry" {
     for_each = var.registry != null ? [var.registry] : []
 
@@ -184,10 +170,10 @@ resource "azurerm_container_app" "container_app" {
 }
 
 
-resource "azurerm_container_app_custom_domain" "custom_domain" {
-  count = var.appgw_hostname_override ? 0 : length(flatten([var.app_gw.hostname]))
+# resource "azurerm_container_app_custom_domain" "custom_domain" {
+#   count = var.appgw_hostname_override ? 0 : length(flatten([var.app_gw.hostname]))
 
-  name                                     = flatten([var.app_gw.hostname])[count.index]
-  container_app_id                         = azurerm_container_app.container_app.id
-  certificate_binding_type                 = "Disabled"
-}
+#   name                                     = flatten([var.app_gw.hostname])[count.index]
+#   container_app_id                         = azurerm_container_app.container_app.id
+#   certificate_binding_type                 = "Disabled"
+# }
