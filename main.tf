@@ -133,12 +133,12 @@ resource "azurerm_container_app_job" "container_app_job" {
   }
   }
 
-  #   lifecycle {
-  #   ignore_changes = [
-  #     template[0].container[0].image,
-  #     tags
-  #   ]
-  # }
+    lifecycle {
+    ignore_changes = [
+      template[0].container[0].image,
+      tags
+    ]
+  }
 
 
   dynamic "identity" {
