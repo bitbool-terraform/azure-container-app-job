@@ -99,5 +99,25 @@ variable "startup_probe_defaults" {
 
 variable "replica_timeout_in_seconds" { default = 900 }
 
+
+# Triggers
+variable "trigger_type" { default = "manual" }
+
+# Manual trigger defaults:
 variable "manual_trigger_config_parallelism" { default = 1 }
 variable "replica_completion_count" { default = 1 }
+
+
+variable "event_trigger_config" { default = {} }
+
+
+variable "event_trigger_config_metadata" { default = {} }
+
+
+
+
+
+
+
+
+

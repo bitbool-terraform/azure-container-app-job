@@ -9,10 +9,48 @@ resource "azurerm_container_app_job" "container_app_job" {
   workload_profile_name        = var.workload_profile
   replica_timeout_in_seconds   = var.replica_timeout_in_seconds
 
-  manual_trigger_config {
+
+  dynamic "manual_trigger_config" {
+    for_each = var.trigger_type == "manual" ? [var.trigger_type] : []
+
+    content {
     parallelism              = var.manual_trigger_config_parallelism
     replica_completion_count = var.replica_completion_count
+    }
   }
+
+
+  dynamic "event_trigger_config" {
+    for_each = var.trigger_type == "event" ? [var.trigger_type] : []
+
+    content {
+      parallelism              = var.event_trigger_config.parallelism
+      replica_completion_count = var.event_trigger_config.replica_completion_count
+
+
+      scale {
+
+        min_executions = var.event_trigger_config.scale.min_executions
+        max_executions = var.event_trigger_config.scale.max_executions
+        polling_interval_in_seconds = var.event_trigger_config.scale.polling_interval_in_seconds
+
+        rules {
+          name = var.event_trigger_config.rules.name
+          custom_rule_type = var.event_trigger_config.rules.custom_rule_type
+
+          authentication {
+            secret_name       = var.event_trigger_config.rules.secret_name
+            trigger_parameter = var.event_trigger_config.rules.trigger_parameter
+          }
+
+          metadata = var.event_trigger_config_metadata
+        }
+      }
+    }
+  }
+
+
+
    
   dynamic "secret" {
     for_each = local.secrets_all
